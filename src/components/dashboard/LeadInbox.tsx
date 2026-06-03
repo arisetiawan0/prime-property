@@ -63,6 +63,21 @@ function getInitials(name: string): string {
     .toUpperCase();
 }
 
+async function fetchLeads() {
+  const response = await fetch("/api/admin/leads");
+  if (!response.ok) {
+    return {
+      error:
+        response.status === 401
+          ? "Sesi login sudah berakhir. Silakan login ulang."
+          : "Gagal mengambil data leads.",
+    };
+  }
+
+  const payload = (await response.json()) as { data?: LeadWithProperty[] };
+  return { data: payload.data };
+}
+
 export function LeadInbox() {
   const [leads, setLeads] = useState<LeadWithProperty[]>(
     initialLeads.map((l) => ({ ...l, replies: l.replies ?? [] }))
@@ -73,23 +88,18 @@ export function LeadInbox() {
   const [reply, setReply] = useState("");
   const [toast, setToast] = useState<string | null>(null);
   const [fetchError, setFetchError] = useState<string | null>(null);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   async function loadLeads() {
     setLoading(true);
     setFetchError(null);
     try {
-      const response = await fetch("/api/admin/leads");
-      if (!response.ok) {
-        if (response.status === 401) {
-          setFetchError("Sesi login sudah berakhir. Silakan login ulang.");
-        } else {
-          setFetchError("Gagal mengambil data leads.");
-        }
+      const result = await fetchLeads();
+      if (result.error) {
+        setFetchError(result.error);
         return;
       }
-      const payload = (await response.json()) as { data?: LeadWithProperty[] };
-      const data = payload.data;
+      const data = result.data;
       if (data) {
         setLeads(data.map((l) => ({ ...l, replies: l.replies ?? [] })));
         setActiveId((prev) =>
@@ -106,7 +116,36 @@ export function LeadInbox() {
   }
 
   useEffect(() => {
-    loadLeads();
+    let cancelled = false;
+
+    fetchLeads()
+      .then((result) => {
+        if (cancelled) return;
+        if (result.error) {
+          setFetchError(result.error);
+          return;
+        }
+
+        const data = result.data;
+        if (data) {
+          setLeads(data.map((l) => ({ ...l, replies: l.replies ?? [] })));
+          setActiveId((prev) =>
+            prev && data.find((l) => l.id === prev)
+              ? prev
+              : data[0]?.id ?? null
+          );
+        }
+      })
+      .catch(() => {
+        if (!cancelled) setFetchError("Tidak dapat terhubung ke server.");
+      })
+      .finally(() => {
+        if (!cancelled) setLoading(false);
+      });
+
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   const counts = useMemo(
