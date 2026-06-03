@@ -1,0 +1,43 @@
+@import "tailwindcss";
+
+@theme inline {
+  /* ── Colors (PRD §5.1) ── */
+  --color-charcoal: #1A1A1A;
+  --color-gold: #C9A961;
+  --color-gold-dark: #A88B4A;
+  --color-calm-red: #B33A3A;
+  --color-cream: #FAF9F6;
+  --color-pebble: #F5F5F5;
+  --color-pure-white: #FFFFFF;
+
+  /* Status badge colors (PRD §9.4) */
+  --color-status-stock-bg: #D1FAE5;
+  --color-status-stock-text: #065F46;
+  --color-status-sold-bg: #FEE2E2;
+  --color-status-sold-text: #B33A3A;
+  --color-status-huni-bg: #FEF3C7;
+  --color-status-huni-text: #92400E;
+  --color-status-kosong-bg: #EDE9FE;
+  --color-status-kosong-text: #4C1D95;
+
+  /* ── Font ── */
+  --font-sans: var(--font-geist), "Inter", ui-sans-serif, system-ui, sans-serif;
+}
+
+/* ── Focus Ring — Gold (PRD §10.2) ── */
+*:focus-visible {
+  outline: 2px solid var(--color-gold);
+  outline-offset: 2px;
+}
+
+/* ── Loading bar animation ── */
+@keyframes loading {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(400%); }
+}
+
+/* ── Base Body ── */
+body {
+  background-color: var(--color-cream);
+  color: var(--color-charcoal);
+}
