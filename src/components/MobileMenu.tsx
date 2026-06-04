@@ -101,13 +101,6 @@ export function MobileMenu({
         })}
       </nav>
 
-      <Link
-        href="/agent/login"
-        onClick={onClose}
-        className="mt-4 px-6 py-3 border border-gold text-gold text-base font-semibold rounded hover:bg-gold hover:text-charcoal transition-colors duration-300 min-h-[44px]"
-      >
-        Login Agent
-      </Link>
     </div>
   );
 }

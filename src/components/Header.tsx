@@ -88,12 +88,7 @@ export function Header() {
           </div>
 
           <div className="flex items-center gap-4">
-            <Link
-              href="/agent/login"
-              className="hidden sm:inline-flex items-center px-4 py-2 border border-gold text-gold text-sm font-semibold rounded hover:bg-gold hover:text-charcoal transition-colors duration-300 min-h-[44px]"
-            >
-              Login Agent
-            </Link>
+            <div className="hidden md:block w-[136px]" aria-hidden="true" />
             <button
               type="button"
               className="md:hidden flex items-center justify-center w-11 h-11 text-cream hover:text-gold transition-colors"
